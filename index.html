@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Aplikasi Kas RW</title>
+</head>
+<body>
+    <h1>Aplikasi Kas RW</h1>
+    
+    <h3>Tambah Transaksi</h3>
+    <input type="text" id="keterangan" placeholder="Keterangan">
+    <input type="number" id="jumlah" placeholder="Jumlah">
+    <button onclick="tambahTransaksi()">Simpan</button>
+
+    <h3>Daftar Transaksi</h3>
+    <ul id="daftar-transaksi"></ul>
+
+    <script>
+        // Ganti IP ini sesuai dengan IP vm-backend kamu
+        const API_URL = "http://192.168.56.10:8000"; 
+
+        async function ambilTransaksi() {
+            const res = await fetch(`${API_URL}/transaksi`);
+            const data = await res.json();
+            const list = document.getElementById('daftar-transaksi');
+            list.innerHTML = data.map(t => `<li>${t.keterangan}: Rp${t.jumlah}</li>`).join('');
+        }
+
+        async function tambahTransaksi() {
+            const keterangan = document.getElementById('keterangan').value;
+            const jumlah = document.getElementById('jumlah').value;
+            await fetch(`${API_URL}/transaksi`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({keterangan, jumlah, jenis: "masuk", tanggal: "2026-06-15"})
+            });
+            ambilTransaksi();
+        }
+
+        ambilTransaksi();
+    </script>
+</body>
+</html>
